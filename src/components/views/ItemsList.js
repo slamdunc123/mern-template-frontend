@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Container, ListGroup, ListGroupItem, Button } from 'reactstrap';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
-// import uuid from 'uuid';
+
+// redux
 import { connect } from 'react-redux';
 import {
   getItems,
@@ -10,7 +9,9 @@ import {
   updateItem
 } from '../../redux/actions/itemActions';
 
+// reactstrap
 import {
+  Button,
   Modal,
   ModalHeader,
   ModalBody,
@@ -20,10 +21,13 @@ import {
   Input
 } from 'reactstrap';
 
+// prop-types
 import PropTypes from 'prop-types';
-import { ITEMS_LOADING } from '../../redux/actions/types';
 
 class ItemsList extends Component {
+  // *** STATE ***
+
+  // set initital local state of component
   state = {
     addModal: false,
     updateModal: false,
@@ -31,26 +35,33 @@ class ItemsList extends Component {
     name: ''
   };
 
+  // get app state by getItems dispatch
   componentDidMount() {
     this.props.getItems();
   }
 
+  // set add modal state
   addToggle = () => {
     this.setState({
       addModal: !this.state.addModal
     });
   };
 
+  // set update modal state
   updateToggle = () => {
     this.setState({
       updateModal: !this.state.updateModal
     });
   };
 
+  // set state when filling out form fields
   onChange = e => {
     this.setState({ [e.target.name]: e.target.value });
   };
 
+  // *** ADD ITEM ***
+
+  // set form modals state
   onAddClick = () => {
     this.setState({
       addModal: true,
@@ -58,6 +69,7 @@ class ItemsList extends Component {
     });
   };
 
+  // render add form modal
   renderAddModal = () => {
     if (this.state.addModal) {
       return (
@@ -89,6 +101,7 @@ class ItemsList extends Component {
     }
   };
 
+  // submit add form and call addItem dispatch
   onSubmitAddItem = e => {
     e.preventDefault();
     const id = this.state.id;
@@ -108,6 +121,9 @@ class ItemsList extends Component {
     });
   };
 
+  // *** UPDATE ITEM ***
+
+  // set form modals state
   onUpdateClick = (id, name) => {
     console.log(id + ' clicked');
     console.log(name + ' clicked');
@@ -119,6 +135,7 @@ class ItemsList extends Component {
     });
   };
 
+  // render update form modal
   renderUpdateModal = () => {
     if (this.state.updateModal) {
       return (
@@ -159,6 +176,7 @@ class ItemsList extends Component {
     }
   };
 
+  // submit update form and call updateItem dispatch
   onSubmitUpdateItem = e => {
     e.preventDefault();
     const id = this.state.id;
@@ -177,16 +195,23 @@ class ItemsList extends Component {
     });
   };
 
+  // *** DELETE ITEM ***
+
+  // call deleteItem dispatch
   onDeleteClick = id => {
     this.props.deleteItem(id);
   };
 
+  // *** RENDER COMPONENT ***
+
+  // render main view
   render() {
     const { items } = this.props.items;
-    console.log(this.props.items);
+    // console.log(this.props.items);
 
     return (
       <div>
+        {/* show modal based on state value */}
         {this.renderAddModal()}
         {this.renderUpdateModal()}
 
@@ -229,53 +254,14 @@ class ItemsList extends Component {
             </tbody>
           </table>
         </div>
-
-        <div>
-          <Button
-            color='dark'
-            style={{ marginBottom: '2rem' }}
-            onClick={this.onAddClick}
-          >
-            Add Item
-          </Button>
-          <Container>
-            <ListGroup>
-              <TransitionGroup className='items-list'>
-                {items.map(({ _id, name }) => (
-                  <CSSTransition key={_id} timeout={500} classNames='fade'>
-                    <ListGroupItem>
-                      <Button
-                        className='remove-btn'
-                        color='danger'
-                        size='sm'
-                        onClick={() => this.onDeleteClick(_id)}
-                      >
-                        {/* &times; */}
-                        Delete
-                      </Button>
-                      <Button
-                        className='update-btn'
-                        color='warning'
-                        size='sm'
-                        onClick={() => this.onUpdateClick(_id, name)}
-                      >
-                        {/* &times; */}
-                        Update
-                      </Button>
-                      &nbsp;
-                      {name}
-                    </ListGroupItem>
-                  </CSSTransition>
-                ))}
-              </TransitionGroup>
-            </ListGroup>
-          </Container>
-        </div>
       </div>
     );
   }
 }
 
+// *** PROPS ***
+
+// set prop types
 ItemsList.propTypes = {
   getItems: PropTypes.func.isRequired,
   items: PropTypes.object.isRequired
@@ -299,6 +285,7 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
+// retrieve state from store and map to the component's props
 const mapStateToProps = state => ({
   items: state.items
 });
