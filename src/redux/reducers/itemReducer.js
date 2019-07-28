@@ -37,6 +37,7 @@ export default function(state = initialState, action) {
       state.items.map(item => {
         if (item._id === action.payload._id) {
           item.name = action.payload.name;
+          item.desc = action.payload.desc;
           return {
             ...state,
             items: [...state.items, action.payload]
@@ -44,19 +45,6 @@ export default function(state = initialState, action) {
         } else return state;
       });
 
-    //     state.items.map(item => {
-    //     // console.log(item._id, item.name);
-    //     // console.log(action.payload._id, action.payload.name);
-    //     if (item._id === action.payload._id) {
-    //       item.name = action.payload.name;
-    //       console.log(item.name);
-    //     }
-    //     // return item;
-    //     return {
-    //       ...state,
-    //       items: [...state.items, action.payload] // if ...state.items not first need to refresh browers for view to update
-    //     };
-    //   });
     //   break;
 
     case ITEMS_LOADING:

@@ -32,7 +32,8 @@ class ItemsList extends Component {
     addModal: false,
     updateModal: false,
     id: '',
-    name: ''
+    name: '',
+    desc: ''
   };
 
   // get app state by getItems dispatch
@@ -86,7 +87,16 @@ class ItemsList extends Component {
                     type='text'
                     name='name'
                     id='item'
-                    placeholder='Add item'
+                    placeholder='Add Name'
+                    onChange={this.onChange}
+                  />
+
+                  <Label for='desc'>Description</Label>
+                  <Input
+                    type='text'
+                    name='desc'
+                    id='desc'
+                    placeholder='Add Description'
                     onChange={this.onChange}
                   />
                   <Button color='dark' style={{ marginTop: '2rem' }} block>
@@ -103,17 +113,20 @@ class ItemsList extends Component {
 
   // submit add form and call addItem dispatch
   onSubmitAddItem = e => {
+    const { id, name, desc } = this.state;
     e.preventDefault();
-    const id = this.state.id;
-    const name = this.state.name;
-    console.log(id);
-    console.log(name);
+    // const id = this.state.id;
+    // const name = this.state.name;
+    // const desc = this.state.desc;
+    // console.log(id);
+    // console.log(name);
 
     const newItem = {
-      name: this.state.name
+      name: name,
+      desc: desc
     };
-    console.log(newItem);
-    console.log(this.state.name);
+    // console.log(newItem);
+    // console.log(this.state.name);
     // Add item via addItem action
     this.props.addItem(newItem);
     this.setState({
@@ -124,14 +137,15 @@ class ItemsList extends Component {
   // *** UPDATE ITEM ***
 
   // set form modals state
-  onUpdateClick = (id, name) => {
+  onUpdateClick = (id, name, desc) => {
     console.log(id + ' clicked');
     console.log(name + ' clicked');
     this.setState({
       updateModal: true,
       addModal: false,
       id: id,
-      name: name
+      name: name,
+      desc: desc
     });
   };
 
@@ -160,9 +174,18 @@ class ItemsList extends Component {
                     type='text'
                     name='name'
                     id='item'
-                    // placeholder='Update item'
+                    placeholder='Update Name'
                     onChange={this.onChange}
                     defaultValue={this.state.name}
+                  />
+                  <Label for='desc'>Description</Label>
+                  <Input
+                    type='text'
+                    name='desc'
+                    id='desc'
+                    placeholder='Update Description'
+                    onChange={this.onChange}
+                    defaultValue={this.state.desc}
                   />
                   <Button color='dark' style={{ marginTop: '2rem' }} block>
                     Update Item
@@ -178,15 +201,12 @@ class ItemsList extends Component {
 
   // submit update form and call updateItem dispatch
   onSubmitUpdateItem = e => {
+    const { id, name, desc } = this.state;
     e.preventDefault();
-    const id = this.state.id;
-    const name = this.state.name;
-    console.log(id);
-    console.log(name);
-    console.log(this.props);
 
     const updatedItem = {
-      name: this.state.name
+      name: name,
+      desc: desc
     };
 
     this.props.updateItem(id, updatedItem);
@@ -226,6 +246,7 @@ class ItemsList extends Component {
               <tr>
                 <th>ID</th>
                 <th>Name</th>
+                <th>Description</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -234,10 +255,13 @@ class ItemsList extends Component {
                 <tr key={item._id}>
                   <td>{item._id}</td>
                   <td>{item.name}</td>
+                  <td>{item.desc}</td>
                   <td>
                     <button
                       className='btn btn-warning btn-sm'
-                      onClick={() => this.onUpdateClick(item._id, item.name)}
+                      onClick={() =>
+                        this.onUpdateClick(item._id, item.name, item.desc)
+                      }
                     >
                       Update
                     </button>
