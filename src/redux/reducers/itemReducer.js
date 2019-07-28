@@ -28,13 +28,37 @@ export default function(state = initialState, action) {
     case ADD_ITEM:
       return {
         ...state,
-        items: [action.payload, ...state.items] // if action.payload not first new item added to bottom of list until refresh browser
+        items: [...state.items, action.payload] // if action.payload not first new item added to bottom of list until refresh browser
       };
     case UPDATE_ITEM:
-      return {
-        ...state,
-        items: [...state.items, action.payload] // if ...state.items not first need to refresh browers for view to update
-      };
+      //   console.log(state.items);
+      //   console.log(action.payload);
+
+      state.items.map(item => {
+        if (item._id === action.payload._id) {
+          item.name = action.payload.name;
+          return {
+            ...state,
+            items: [...state.items, action.payload]
+          };
+        } else return state;
+      });
+
+    //     state.items.map(item => {
+    //     // console.log(item._id, item.name);
+    //     // console.log(action.payload._id, action.payload.name);
+    //     if (item._id === action.payload._id) {
+    //       item.name = action.payload.name;
+    //       console.log(item.name);
+    //     }
+    //     // return item;
+    //     return {
+    //       ...state,
+    //       items: [...state.items, action.payload] // if ...state.items not first need to refresh browers for view to update
+    //     };
+    //   });
+    //   break;
+
     case ITEMS_LOADING:
       return {
         ...state,

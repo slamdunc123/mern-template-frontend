@@ -21,6 +21,7 @@ import {
 } from 'reactstrap';
 
 import PropTypes from 'prop-types';
+import { ITEMS_LOADING } from '../../redux/actions/types';
 
 class ItemsList extends Component {
   state = {
@@ -164,6 +165,7 @@ class ItemsList extends Component {
     const name = this.state.name;
     console.log(id);
     console.log(name);
+    console.log(this.props);
 
     const updatedItem = {
       name: this.state.name
@@ -180,12 +182,54 @@ class ItemsList extends Component {
   };
 
   render() {
-    const { items } = this.props.item;
+    const { items } = this.props.items;
+    console.log(this.props.items);
 
     return (
       <div>
         {this.renderAddModal()}
         {this.renderUpdateModal()}
+
+        <div className='container'>
+          <button className='btn btn-primary' onClick={this.onAddClick}>
+            Add Item
+          </button>
+          <br />
+          <br />
+          <table className='table table-bordered table-striped'>
+            <thead className='thead-dark'>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map(item => (
+                <tr key={item._id}>
+                  <td>{item._id}</td>
+                  <td>{item.name}</td>
+                  <td>
+                    <button
+                      className='btn btn-warning btn-sm'
+                      onClick={() => this.onUpdateClick(item._id, item.name)}
+                    >
+                      Update
+                    </button>
+                    &nbsp;
+                    <button
+                      className='btn btn-danger btn-sm'
+                      onClick={() => this.onDeleteClick(item._id)}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         <div>
           <Button
             color='dark'
@@ -206,7 +250,8 @@ class ItemsList extends Component {
                         size='sm'
                         onClick={() => this.onDeleteClick(_id)}
                       >
-                        &times;
+                        {/* &times; */}
+                        Delete
                       </Button>
                       <Button
                         className='update-btn'
@@ -214,8 +259,10 @@ class ItemsList extends Component {
                         size='sm'
                         onClick={() => this.onUpdateClick(_id, name)}
                       >
-                        &times;
+                        {/* &times; */}
+                        Update
                       </Button>
+                      &nbsp;
                       {name}
                     </ListGroupItem>
                   </CSSTransition>
@@ -231,7 +278,7 @@ class ItemsList extends Component {
 
 ItemsList.propTypes = {
   getItems: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  items: PropTypes.object.isRequired
 };
 
 // dispatch actions to state in store
@@ -253,7 +300,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 const mapStateToProps = state => ({
-  item: state.item
+  items: state.items
 });
 export default connect(
   mapStateToProps,
