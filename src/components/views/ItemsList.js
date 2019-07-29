@@ -33,7 +33,8 @@ class ItemsList extends Component {
     updateModal: false,
     id: '',
     name: '',
-    desc: ''
+    desc: '',
+    error: ''
   };
 
   // get app state by getItems dispatch
@@ -76,17 +77,21 @@ class ItemsList extends Component {
       return (
         <div>
           <h4>Add Modal Placeholder</h4>
-          <Modal isOpen={this.state.addModal} toggle={this.addToggle}>
+          <Modal isOpen={this.state.addModal}>
             {/* <Modal isOpen='true'> */}
-            <ModalHeader toggle={this.addToggle}>Add Item</ModalHeader>
+            <ModalHeader toggle={this.addToggle}>
+              Add Item
+              {/* render validation error */}
+              <p className='error'>{this.state.error}</p>{' '}
+            </ModalHeader>
             <ModalBody>
               <Form onSubmit={this.onSubmitAddItem}>
                 <FormGroup>
-                  <Label for='item'>Item</Label>
+                  <Label for='name'>Name</Label>
                   <Input
                     type='text'
                     name='name'
-                    id='item'
+                    id='name'
                     placeholder='Add Name'
                     onChange={this.onChange}
                   />
@@ -115,23 +120,25 @@ class ItemsList extends Component {
   onSubmitAddItem = e => {
     const { id, name, desc } = this.state;
     e.preventDefault();
-    // const id = this.state.id;
-    // const name = this.state.name;
-    // const desc = this.state.desc;
-    // console.log(id);
-    // console.log(name);
+    // form validation
+    if (name === '' || desc === '') {
+      this.setState({
+        error: 'Please fill in all fields'
+      });
+    } else {
+      const newItem = {
+        name: name,
+        desc: desc
+      };
 
-    const newItem = {
-      name: name,
-      desc: desc
-    };
-    // console.log(newItem);
-    // console.log(this.state.name);
-    // Add item via addItem action
-    this.props.addItem(newItem);
-    this.setState({
-      addModal: false
-    });
+      this.props.addItem(newItem);
+      this.setState({
+        addModal: false,
+        error: '',
+        name: '',
+        desc: ''
+      });
+    }
   };
 
   // *** UPDATE ITEM ***
@@ -161,19 +168,21 @@ class ItemsList extends Component {
           >
             X
           </Button> */}
-          <Modal isOpen={this.state.updateModal} toggle={this.updateToggle}>
+          <Modal isOpen={this.state.updateModal}>
             {/* <Modal isOpen='true'> */}
             <ModalHeader toggle={this.updateToggle}>
               Update Item - {this.state.id}
+              {/* render validation error */}
+              <p className='error'>{this.state.error}</p>{' '}
             </ModalHeader>
             <ModalBody>
               <Form onSubmit={this.onSubmitUpdateItem}>
                 <FormGroup>
-                  <Label for='item'>Item</Label>
+                  <Label for='name'>Name</Label>
                   <Input
                     type='text'
                     name='name'
-                    id='item'
+                    id='name'
                     placeholder='Update Name'
                     onChange={this.onChange}
                     defaultValue={this.state.name}
@@ -203,16 +212,25 @@ class ItemsList extends Component {
   onSubmitUpdateItem = e => {
     const { id, name, desc } = this.state;
     e.preventDefault();
+    // form validation
+    if (name === '' || desc === '') {
+      this.setState({
+        error: 'Please fill in all fields'
+      });
+    } else {
+      const updatedItem = {
+        name: name,
+        desc: desc
+      };
 
-    const updatedItem = {
-      name: name,
-      desc: desc
-    };
-
-    this.props.updateItem(id, updatedItem);
-    this.setState({
-      updateModal: false
-    });
+      this.props.updateItem(id, updatedItem);
+      this.setState({
+        updateModal: false,
+        error: '',
+        name: '',
+        desc: ''
+      });
+    }
   };
 
   // *** DELETE ITEM ***
